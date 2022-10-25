@@ -6,7 +6,7 @@
 
 extern char *manager();
 
-int main(int argc, char *argv[])
+int main()
 {
     printf("Welcome to the Arrays of Integers program.\nDeveloped for you by Eduardo Nunez\n");
     char *name = manager();
