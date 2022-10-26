@@ -1,7 +1,7 @@
 ; Author: Eduardo Nunez
 ; Author email: eduardonunez@csu.fullerton.edu
 ; Program: Pure Assembly In 2022
-; File: main.asm, asm
+; File: main.asm, assembly
 ; Requirements: 
 ; 1) welcome msg, 2) time in tics, 3) inputs a float in degrees
 ; outputs same # for confirmation, 4) converts degree # to radian
