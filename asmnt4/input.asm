@@ -1,10 +1,9 @@
-c```; Author: Eduardo Nunez
+; Author: Eduardo Nunez
 ; Author email: eduardonunez@csu.fullerton.edu
 ; Program: Pure Assembly In 2022
 ; File: input.asm, assembly
 
-extern input
-
+extern main
 
 global input 
 
@@ -33,3 +32,24 @@ push r14
 push r15                                                    
 push rbx                                                    
 pushf   
+
+
+
+;========================= Restoring all 64 bit registers for stability and peace among the stack =========================
+popf                                                        
+pop rbx                                                    
+pop r15                                                    
+pop r14                                                    
+pop r13                                                   
+pop r12                                                     
+pop r11                                                   
+pop r10                                                     
+pop r9                                                     
+pop r8                                                     
+pop rcx                                                     
+pop rdx                                                   
+pop rsi                                                    
+pop rdi                                                     
+pop rbp    
+                                                 
+ret

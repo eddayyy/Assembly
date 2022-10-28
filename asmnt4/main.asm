@@ -7,6 +7,9 @@
 ; outputs same # for confirmation, 4) converts degree # to radian
 ; computes cosine of the radian, 5) shows # of tics, 6) says goodbye 
 
+extern input, tics, goodbye, conversion, confirm, computes 
+extern strlen
+
 global _start
 section .data
     welcomePhrase db "Welcome to the Accurate Cosines by EN", 10, 0 
@@ -44,22 +47,33 @@ push r14
 push r15                                                    
 push rbx                                                    
 pushf   
+;======================== Loop to get the string lenth ========================
+; mov rax, 0 
+; mov rdi, welcome
+; call strlen
+; mov r15, rax
 
 ;======================== Printing out the welcome prompt ========================
 mov rax, sys_write
 mov rdi, stdout 
 mov rsi, welcomePhrase
-mov rdx, welcome 
+mov rdx, r15 
 syscall 
 ; end block 
 
-;======================== Dumping memory ========================
+;======================== Printing out time phrase 1 ========================
 mov rax, sys_write
 mov rdi, stdout 
 mov rsi, timePhrase
-mov rdx, time1
+mov rdx, time1 ; This prints "The time is now " without a newline at the end 
 syscall
 ; end block
+
+;======================== Ending this dumb program ========================
+mov rax, 60
+mov rdi, 0
+syscall
+
 
 ;========================= Restoring all 64 bit registers for stability and peace among the stack =========================
 popf                                                        
@@ -78,4 +92,4 @@ pop rsi
 pop rdi                                                     
 pop rbp                                                     
 
-ret
+ 
