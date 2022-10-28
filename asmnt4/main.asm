@@ -61,13 +61,18 @@ mov rdx, r15
 syscall 
 ; end block 
 
-;======================== Printing out time phrase 1 ========================
-mov rax, sys_write
-mov rdi, stdout 
-mov rsi, timePhrase
-mov rdx, time1 ; This prints "The time is now " without a newline at the end 
-syscall
+;======================== Holding off with the time module ========================
+; mov rax, sys_write
+; mov rdi, stdout 
+; mov rsi, timePhrase
+; mov rdx, time1 ; This prints "The time is now " without a newline at the end 
+; syscall
 ; end block
+
+;======================== Receive the input ========================
+call input
+
+
 
 ;======================== Ending this dumb program ========================
 mov rax, 60

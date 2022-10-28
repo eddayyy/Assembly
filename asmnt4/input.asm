@@ -2,13 +2,16 @@
 ; Author email: eduardonunez@csu.fullerton.edu
 ; Program: Pure Assembly In 2022
 ; File: input.asm, assembly
+global input
 
 extern main
 
-global input 
-
 section .data
-
+;========================= Initializing constants =========================
+stdin equ 0 
+stdout equ 1
+SYS_time equ 201 ; get time 
+NULL equ 0
 
 section .bss
 
@@ -32,6 +35,24 @@ push r14
 push r15                                                    
 push rbx                                                    
 pushf   
+
+
+;========================= Loop to Count String Length =========================
+
+push rbx
+mov rdx, 0
+strCountLoop:
+cmp byte[rbx], NULL 
+je strCountDone
+inc rdx
+inc rbx 
+jmp strCountLoop
+strCountDone:
+cmp rdx, 0 
+je prtDone
+
+
+
 
 
 
