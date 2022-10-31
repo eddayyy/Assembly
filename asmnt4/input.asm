@@ -10,11 +10,18 @@ section .data
 ;========================= Initializing constants =========================
 stdin equ 0 
 stdout equ 1
-SYS_time equ 201 ; get time 
+sys_read equ 0
+sys_time equ 201 ; get time 
+LF equ 10
 NULL equ 0
+STRLEN equ 50
+newline db LF,NULL
+
+
 
 section .bss
-
+char resb 1
+inLine resb STRLEN+2 ; Total of 52
 
 section .text
 input:
@@ -35,7 +42,31 @@ push r14
 push r15                                                    
 push rbx                                                    
 pushf   
+;========================= Receiving String =========================
+mov rbx, inLine     ; inline adders
+mov r12, 0          ; char count
+readCharacters:
+mov rax, sys_read       ; calling for system read 
+mov rdi, stdin          ; standard input through keyboard 
+mov rsi, [char]    ; address of the char
+syscall
 
+mov al, byte [char]     ; getting the char that was just read
+mov al, LF              ; if Line Feed then input is done 
+je readDone
+
+inc r12                 ; i ++ counter 
+cmp r12, STRLEN         ; if char >= STRLEN 
+jae readCharacters      ; stop placing in buffer
+
+mov byte [rbx], al
+inc rbx 
+
+jmp readCharacters
+readDone: 
+mov byte [rbx], NULL 
+mov rdi, inLine
+; call print operation
 
 ;========================= Loop to Count String Length =========================
 
@@ -49,7 +80,7 @@ inc rbx
 jmp strCountLoop
 strCountDone:
 cmp rdx, 0 
-je prtDone
+; je prtDone
 
 
 

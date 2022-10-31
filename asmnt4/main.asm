@@ -7,8 +7,6 @@
 ; outputs same # for confirmation, 4) converts degree # to radian
 ; computes cosine of the radian, 5) shows # of tics, 6) says goodbye 
 
-extern input, tics, goodbye, conversion, confirm, computes 
-extern strlen
 
 global _start
 section .data
@@ -70,11 +68,10 @@ syscall
 ; end block
 
 ;======================== Receive the input ========================
-call input
 
 
 
-;======================== Ending this dumb program ========================
+;======================== Ending this program ========================
 mov rax, 60
 mov rdi, 0
 syscall
@@ -97,4 +94,4 @@ pop rsi
 pop rdi                                                     
 pop rbp                                                     
 
- 
+ret 
