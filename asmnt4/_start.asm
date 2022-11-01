@@ -27,7 +27,7 @@
 ;  The intention is to teach readers the ins and outs of pure assembly so that they may recreate their own software.
 ;
 ;This file
-;  File name: input.asm
+;  File name: _start.asm
 ;  Language: X86 using NASM Assembler and Intel syntax
 ;========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1=========2=========3**
 ;Compiling and Linking this program and file:
@@ -41,38 +41,40 @@
 ;  
 ;
 ;===== Begin code area ========================================================================================================
-extern showstring
-global input
 
-;========================= Initializing constants =========================
-stdin equ 0 
-stdout equ 1
-sys_read equ 0
-sys_write equ 1
-max_length equ 20
-sys_time equ 201 ; get time 
-strnlen equ max_length + 1
 
-LF equ 10
-NULL equ 0
-pointer_to_line_len equ 1
-success equ 0
-exit equ 60
+extern input, showstring, strlen, input, stringtof, ftoa, itoa, cosine
 
+global _start
 section .data
-newline db 0xa, 0xa, 0xa, 0xa, 0xa, 0xa, 0xa, 0xa, 0        ;Declare an array of 8 bytes where each byte is initialize with ascii value 10 (newline)                                   
-inputPhrase db "Please enter an angle in degrees and press enter: ", 0
-enteredPhrase db "You entered: ", 0
-PTLF db LF, 10, 0
-
+    
+    newline db 0xa, 0xa, 0xa, 0xa, 0xa, 0xa, 0xa, 0xa, 0        ;Declare an array of 8 bytes where each byte is initialize with ascii value 10 (newline)                                   
+    tab db 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0    ;Declare an array of 8 bytes where each byte is initialize with 32 (blank space).  Thus, this array equals 
+                                                                ;one standard tab.
+    radians db "The equivalent radians is ", 0
+    cosine_prompt db "The cosine of those degrees is ", 0
+    welcomePhrase db "Welcome to the Accurate Cosines by Eduardo Nunez", 10, 0 
+    timePhrase db "The time is now ", 0
+    timePhrase2 db " tics", 10, 0
+    enteredPhrase db "You entered ", 0
+    equivalentPhrase db "The equivalent radians is ", 0
+    cosinePhrase db "The cosine of those degrees is ", 0
+    secondsPhrase db "The time is now ", 0 
+    secondsPhrase2 db " seconds", 0
+    byePhrase db "Have a nice day, bye.", 10, 0
 
 section .bss
-align 16
-char resb 1
-user_name resb strnlen
+    stdout equ 1
+    stdin equ 0
+    sys_write equ 1 
+    sys_read equ 0
+    tic resb 50
+    tic2 resb 50
+    float_in_string resb 30
+    cos_string resb 30
 
 section .text
-input:
+_start:
 ;========================= Backing up all 64 bit registers =========================
 push rbp
 mov  rbp,rsp
@@ -91,69 +93,183 @@ push r15
 push rbx                                                    
 pushf   
 
-
-;========================= Receiving String =========================
-mov rdi, inputPhrase
+;======================== Printing out the welcome prompt ========================
+mov rdi, welcomePhrase
 mov rsi, 0
 call showstring
 
-;========================= Receiving String =========================
-mov rax, sys_read
-mov rdi, stdin 
-mov rsi, user_name
-mov rdx, max_length
+;======================== Time Module Part 1 ========================
+mov rax, 0 
+mov rdi, timePhrase
+mov rsi, 0
+call showstring
+
+;get time
+cpuid
+rdtsc
+shl rdx, 32
+or rdx, rax
+mov r14, rdx
+
+;call itoa
+mov rax, 0
+mov rdi, r14
+mov rsi, tic
+call itoa
+mov r13, tic
+
+;get strlen of the time
+mov rax, 0
+mov rdi, r13
+call strlen
+mov r15, rax
+
+;output the time
+mov rax, sys_write
+mov rdi, stdout
+mov rsi, r13
+mov rdx, r15
 syscall
 
-mov r15, rax ; Holds # of chars inputted
-
-cmp r15, max_length
-jl keep_going
-
-mov [user_name + max_length], byte NULL
-inc r15
-
-clear_input_buffer:
-    mov rax, sys_read
-    mov rdi, stdin
-    mov rsi, char
-    mov rdx, 1
-    syscall 
-    mov al, byte [char]
-    cmp al, byte LF
-    jne clear_input_buffer
-
-jmp keep_going
-
-keep_going:
-    mov [user_name+ r15 - 1], byte NULL
-
-mov rdi, enteredPhrase
+mov rax, 0
+mov rdi, timePhrase2
 mov rsi, 0
 call showstring
 
+;======================== Receive the input ========================
+call input
+mov r12, rax ; string
+mov r13, rdi ; string length
 
-print:
-    ;print the char
-    mov rax, sys_write
-    mov rdi, stdout
-    mov rsi, user_name
-    mov rdx, r15
-    syscall
+;======================== Convert the input into a float ========================
+mov rax, 0
+mov rdi, r12
+call stringtof
+movsd xmm8, xmm0
 
-    mov rax, sys_write
-    mov rdi, stdout 
-    mov rsi, pointer_to_line_len
-    mov rdx, PTLF
-    syscall
+;======================== Radians Output Section ========================
+mov rax, 0
+mov rdi, radians
+mov rsi, 0
+call showstring
 
-    mov rax, sys_write
-    mov rdi, stdout 
-    mov rsi, newline
-    mov rdx, 1
-    syscall 
+;======================== Convert the Input into Radians ========================
+mov rbx, 180
+cvtsi2sd xmm10, rbx
+mov rax, 0x400921FB54442D18
+push rax
+movsd xmm9, [rsp]
+pop rax
+mulsd xmm8, xmm9
+divsd xmm8, xmm10
 
-    mov rax, user_name ; string
-    mov rdi, r15 ; stringlength
+; ftoa will get us the radian value
+mov rax, 1
+movsd xmm0, xmm8
+mov rdi, float_in_string
+mov rsi, 30
+call ftoa
+mov r12, rax
+
+;======================== Radians Output Section ========================
+mov rax, sys_write
+mov rdi, stdout
+mov rsi, float_in_string
+mov rdx, r12
+syscall
+
+;output newline
+mov rax, sys_write
+mov rdi, stdout
+mov rsi, newline
+mov rdx, 1
+syscall
+
+;======================== Cosine Of The Radians ========================
+;call cosine
+mov rax, 1
+movsd xmm0, xmm8
+call cosine
+movsd xmm9, xmm0
+
+;get strlen of cosine_prompt
+mov rax, 0
+mov rdi, cosine_prompt
+call strlen
+mov r15, rax
+
+;output cosine_prompt
+mov rax, sys_write
+mov rdi, stdout
+mov rsi, cosine_prompt
+mov rdx, r15
+syscall
+
+
+mov rax, 1
+movsd xmm0, xmm9
+mov rdi, cos_string
+mov rsi, 30
+call ftoa
+mov r12, rax
+
+;output float_string
+mov rax, sys_write
+mov rdi, stdout
+mov rsi, cos_string
+mov rdx, r12
+syscall
+
+;output newline
+mov rax, sys_write
+mov rdi, stdout
+mov rsi, newline
+mov rdx, 1
+syscall
+
+;======================== Time Module Part 2 ========================
+mov rax, 0 
+mov rdi, timePhrase
+mov rsi, 0
+call showstring
+
+;get time
+cpuid
+rdtsc
+shl rdx, 32
+or rdx, rax
+mov r14, rdx
+
+;call itoa
+mov rax, 0
+mov rdi, r14
+mov rsi, tic2
+call itoa
+mov r13, tic2
+
+;output the time
+mov rax, sys_write
+mov rdi, stdout
+mov rsi, r13
+mov rdx, r15
+syscall
+
+mov rax, 0
+mov rdi, timePhrase2
+mov rsi, 0
+call showstring
+
+;======================== Ending this program ========================
+mov rax, 0
+mov rdi, byePhrase
+mov rsi, 0
+call showstring
+
+;======================== Ending this program ========================
+mov rax, 60 ; exit
+mov rdi, 0 ; success
+syscall
+
 
 ;========================= Restoring all 64 bit registers for stability and peace among the stack =========================
 popf                                                        
@@ -170,6 +286,6 @@ pop rcx
 pop rdx                                                   
 pop rsi                                                    
 pop rdi                                                     
-pop rbp    
-                                                 
-ret
+pop rbp                                                     
+
+ret 
