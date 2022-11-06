@@ -4,8 +4,10 @@
 
 #include <iostream>
 
-extern "C" manager();
+extern "C" int manager();
 
 int main()
 {
+    std::cout << "Welcome to Quicksort Benchmark by Eduardo Nunez.\n";
+    std::cout << "\nThis program wwill measure the execution time of a sort function.\n\n";
 }
