@@ -1,21 +1,23 @@
 ; Author: Eduardo Nunez
 ; Author email: eduardonunez@csu.fullerton.edu
 
-extern printf, scanf
+extern printf
+extern scanf
 
 global manager
 
-section .data
-    inputPrompt db "Please input the count of number of data items to be placed into the array (maximum 10 million): ", 0
-    arrayFilled db "The array has been filled with non-deterministic random 64-bit float numbers.", 10, 0
-    
+manager:
 
+section .data
+    inputPrompt db "Please input the count of number of data items to be placed into the array (with maximum 10 million): ", 10, 0
+    inputConfirm db "The array has been filled with non-deterministic random 64-bit float numbers.", 10, 0
+    tenBeginning db "Here are 10 numbers of the array at the beginning: ", 10, 0
+    intFormat db "%d", 0
 
 section .bss
+    userInput: db 0
 
 section .text
-manager:
-;   ************************* Backing up all 64 bit registers *************************
 push rbp
 mov  rbp,rsp
 push rdi                                                    
@@ -31,9 +33,18 @@ push r13
 push r14                                                   
 push r15                                                    
 push rbx                                                    
-pushf                                                       
+pushf      
 
-pop rax
+;************************* Print Out Input Prompt ************************* 
+mov rax, 0
+mov rdi, inputPrompt
+call printf
+
+;************************* Collect User Array Amount ************************* 
+mov rax, 0
+mov rdi, intFormat
+mov rsi, userInput
+call scanf
 
 
 popf                                                        
