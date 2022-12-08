@@ -33,7 +33,7 @@ push r15
 push rbx                                                    
 pushf                                                       
 
-
+pop rax
 
 
 popf                                                        

@@ -10,4 +10,6 @@ int main()
 {
     std::cout << "Welcome to Quicksort Benchmark by Eduardo Nunez.\n";
     std::cout << "\nThis program wwill measure the execution time of a sort function.\n\n";
+    int answer = manager();
+    return 0;
 }
