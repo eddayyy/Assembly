@@ -29,6 +29,7 @@ section .data
 section .bss
     name resb input_LEN
     num_array resq 6
+    
 section .text
 manager: 
 ;   ************************* Backing up all 64 bit registers *************************
@@ -89,9 +90,6 @@ mov rax, 0
 mov rdi, arrout
 call printf 
 push qword 0
-
-
-
 
 
 ; ;   ************************* Calling display.cpp to Display The Array *************************

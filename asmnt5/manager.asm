@@ -3,10 +3,16 @@
 
 extern printf
 extern scanf
+extern fgets
+extern stdin
+extern strlen
+extern fill_array
 
 global manager
 
 manager:
+
+INPUT_LEN equ 256
 
 section .data
     inputPrompt db "Please input the count of number of data items to be placed into the array (with maximum 10 million): ", 10, 0
@@ -15,7 +21,8 @@ section .data
     intFormat db "%d", 0
 
 section .bss
-    userInput: db 0
+    arr_size: resb INPUT_LEN
+    arr: resb 8 * 10000000
 
 section .text
 push rbp
@@ -40,12 +47,28 @@ mov rax, 0
 mov rdi, inputPrompt
 call printf
 
-;************************* Collect User Array Amount ************************* 
+;************************* Collect User Array Size ************************* 
 mov rax, 0
-mov rdi, intFormat
-mov rsi, userInput
-call scanf
+mov rdi, arr_size
+mov rsi, INPUT_LEN
+mov rdx, [stdin]
+call fgets 
 
+mov rax, 0
+mov rdi, arr_size
+call strlen
+
+
+;************************* Call fill_array And Pass In The Size ************************* 
+mov rax, 0
+mov rdi, [arr] ; array
+mov rsi, arr_size ; array size
+call fill_array
+
+;************************* Confirmation line ************************* 
+mov rax, 0
+mov rdi, inputConfirm
+call printf
 
 popf                                                        
 pop rbx                                                    

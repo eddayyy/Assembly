@@ -3,10 +3,13 @@
 
 #include <iostream>
 
-void display_array(int my_arr[], int size)
+extern "C" void display_array(double array[], unsigned long int array_size);
+
+void display_array(double array[], unsigned long int array_size)
 {
-    for (int i = 0; i < size; i++)
+    std::cout << "\nYou are entering the display array function.\n";
+    for (unsigned long int i = 0; i < array_size; i++)
     {
-        std::cout << my_arr[i] << " ";
+        std::cout << array[i] << " ";
     }
 }

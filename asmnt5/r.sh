@@ -11,7 +11,7 @@ CFLAGS="-g -m64 -Wall -Wextra -Wpedantic -fsanitize=address -fstack-protector -f
 CXXFLAGS="$CFLAGS -std=c++17"
 
 for f in $(glob *.asm); do
-	nasm -f elf64 -o "$f.o" "$f"
+	nasm -f elf64 -g -gdwarf -o "$f.o" "$f"
 done
 
 for f in $(glob *.cpp); do
