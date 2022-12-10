@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -e
+
+echo "Beginning bash script by removing all .o, .lis, and .out files."
 rm -f -- *.o *.lis *.out
 
 glob() {
