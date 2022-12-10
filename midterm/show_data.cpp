@@ -7,10 +7,11 @@
 
 extern "C" void displaycpp(double array[], int array_size);
 
-void displaycpp(double array[], int array_size){
-    for (int i = 0; i < array_size; i++){
+void displaycpp(double array[], int array_size)
+{
+    for (int i = 0; i < array_size; i++)
+    {
         printf("%.16lf", array[i]);
         printf("\n");
     }
-    
 }

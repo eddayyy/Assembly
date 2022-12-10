@@ -9,5 +9,5 @@ int main()
 {
     std::cout << "Welcome to the array filler program by Eduardo Nunez.\n";
     int answer = manager();
-    std::cout << answer;
+    // std::cout << " " << answer << std::endl;
 }

@@ -1,16 +1,10 @@
 ; Author: Eduardo Nunez
 ; Author email: eduardonunez@csu.fullerton.edu
 
-extern printf
-extern scanf
-extern fgets
-extern stdin
-extern strlen
-extern fill_array
+extern printf, scanf, fgets, stdin, strlen, fill_array, array_displayer, test
 
 global manager
 
-manager:
 
 INPUT_LEN equ 256
 
@@ -21,10 +15,12 @@ section .data
     intFormat db "%d", 0
 
 section .bss
-    arr_size: resb INPUT_LEN
-    arr: resb 8 * 10000000
+    arr_size resq 1000000
+    arr resq 10000000
 
 section .text
+manager:
+
 push rbp
 mov  rbp,rsp
 push rdi                                                    
@@ -48,27 +44,35 @@ mov rdi, inputPrompt
 call printf
 
 ;************************* Collect User Array Size ************************* 
-mov rax, 0
-mov rdi, arr_size
-mov rsi, INPUT_LEN
-mov rdx, [stdin]
-call fgets 
-
-mov rax, 0
-mov rdi, arr_size
-call strlen
-
+mov rax, 0 
+mov rdi, intFormat
+mov rsi, arr_size
+call scanf
 
 ;************************* Call fill_array And Pass In The Size ************************* 
 mov rax, 0
-mov rdi, [arr] ; array
+mov rdi, arr ; array
 mov rsi, arr_size ; array size
 call fill_array
+mov r13, rax ; Placing the array size inside of r15
 
 ;************************* Confirmation line ************************* 
 mov rax, 0
 mov rdi, inputConfirm
 call printf
+
+;************************* Calling Test Function ************************* 
+mov rax, 0
+mov rdi, arr_size
+call test 
+
+;************************* Display Array ************************* 
+mov rax, 0
+mov rdi, arr
+mov rsi, r13
+call array_displayer
+
+
 
 popf                                                        
 pop rbx                                                    
