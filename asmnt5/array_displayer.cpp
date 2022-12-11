@@ -15,6 +15,7 @@ void array_displayer(float array[], int size)
     //           << array[10]
     //           << std::endl
     //           << "[";
+
     if (size <= 10)
     {
         std::cout << "\nThe array size you determined is less than or equal to 10, here is the entire array:\n";
@@ -24,6 +25,7 @@ void array_displayer(float array[], int size)
         }
         return;
     }
+    std::array<int, 5> my_array = {1, 2, 3, 4, 5};
     std::cout << "Here are 10 numbers of the array at the beginning: \n";
 
     for (int i = 0; i < 10; i++)
