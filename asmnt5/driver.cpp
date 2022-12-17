@@ -3,11 +3,11 @@
 
 #include <iostream>
 
-extern "C" int manager();
+extern "C" double manager();
 
 int main()
 {
     std::cout << "Welcome to the array filler program by Eduardo Nunez.\n";
-    int answer = manager();
-    // std::cout << " " << answer << std::endl;
+    double answer = manager();
+    std::cout << "\n\nThe main program received: " << answer << std::endl;
 }

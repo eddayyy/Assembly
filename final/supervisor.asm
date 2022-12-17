@@ -1,35 +1,31 @@
 ; Author: Eduardo Nunez
-; Author email: eduardonunez@csu.fullerton.edu
+; Course: CPSC240-01
+; Author: eduardonunez@csu.fullerton.edu
+; FINAL PROGRAM TEST
 
-extern printf, fill_array, array_displayer, get_frequency
-extern clock_speed, scanf, sortFloats, sortedarray_displayer
+extern scanf, printf
+extern random_fill_array, hsum, display_array
 
-global manager
+global supervisor
 
 
 INPUT_LEN equ 256
-max_size equ 10000000
+max_size equ 1000000
 
 section .data
-    inputPrompt db "Please input the count of number of data items to be placed into the array (with maximum 10 million): ", 10,10, 0
+    inputPrompt db "Please input the count of number of data items to be placed into the array (with maximum 1 million): ", 10,10, 0
     inputConfirm db 10, "The array has been filled with non-deterministic random 64-bit float numbers.", 10, 0
-    tenBeginning db "Here are 10 numbers of the array at the beginning: ", 10, 0
-    intFormat db "%d", 0
-    text2 db "The time is now %lu tics. Sorting will begin.", 10, 0
-    text5 db "The time is now %lu tics. Sorting has finished.", 10, 10, 0
-    text6 db "Total sort time is %lu tics.", 10, 10, 0
-    text7 db "Your processor frequency in GHz is %.2lf.", 10, 10, 0
-    text8 db "The elapsed time equals %.9lf seconds.", 10, 10, 0
-    text9 db "The sum will be returned to the caller module.", 10, 10, 0
-    frequency db "An AMD processor was detected. Please enter your processor frequency in GHz: ", 0
-
+    valuesDisplay db 10, "Here are the values in the array: ",10 ,0
+    hSumDisplay db "The harmonic sum is %1.100lf", 10 ,0
+    hMeanDisplay db "The harmonic mean is %1.100lf", 10, 0
     ld db "%ld", 0
     lf db "%lf", 0
+
 section .bss
     arr resq max_size
 
 section .text
-manager:
+supervisor:
 
 push rbp
 mov  rbp,rsp
@@ -53,11 +49,11 @@ mov rax, 0
 mov rdi, inputPrompt
 call printf
 
-;************************* Call fill_array And Pass In The Size ************************* 
+;************************* Call random_fill_array And Pass In The Array ************************* 
 push qword 0
 mov rax, 0
 mov rdi, arr        ; array 
-call fill_array
+call random_fill_array
 mov r13, rax        ; Placing the amount of times fill_array iterated "arr" into r13 
 
 ;************************* Confirmation line ************************* 
@@ -65,19 +61,47 @@ mov rax, 0
 mov rdi, inputConfirm
 call printf
 
-;************************* Calling Test Function ************************* 
+;************************* Confirmation line ************************* 
+mov rax, 0 
+mov rdi, valuesDisplay
+call printf
+
+;************************* Displaying The Array ************************* 
 push qword 0
 mov rax, 0
 mov rdi, arr
 mov rsi, r13
-call array_displayer 
+call display_array 
 
 pop rax
 pop rax
 
-call get_frequency
-movsd xmm2, xmm0
-movsd xmm0, xmm2
+;************************* Calculating the harmonic sum ************************* 
+mov rax, 0
+mov rdi, arr
+mov rsi, r13
+call hsum
+movsd xmm12, xmm0
+mov r12, rax
+;************************* Display the harmonic sum ************************* 
+mov rax, 1
+mov rdi, hSumDisplay
+movsd xmm0, xmm12
+call printf
+
+;************************* Display the harmonic mean *************************
+movq xmm8, r12
+divsd xmm8, xmm8
+
+mov rax, 1
+mov rdi, hMeanDisplay
+movsd xmm0, xmm12
+call printf 
+
+end:
+movsd xmm0, xmm12
+
+
 popf                                                        
 pop rbx                                                    
 pop r15                                                    

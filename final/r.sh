@@ -1,3 +1,17 @@
+# Author: Eduardo Nunez
+# Course: CPSC240-01
+# Author: eduardonunez@csu.fullerton.edu
+# FINAL PROGRAM TEST
+
+#----------------------------------------------------------------------
+# DISCLAIMER FOLLOW THESE INSTRUCTIONS:
+# "sh r.sh" will NOT work with this bash script
+# To run this program correctly, you MUST do the following commands:
+# chmod +x r.sh
+# ./r.sh
+# ./*directoryname*.out
+#----------------------------------------------------------------------
+
 #!/usr/bin/env bash
 set -e
 
