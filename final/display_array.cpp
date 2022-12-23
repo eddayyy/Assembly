@@ -3,8 +3,6 @@
 // Author email: eduardonunez@csu.fullerton.edu
 // FINAL PROGRAM TEST
 
-// Authors Note: I've never taken a "C" course at CSUF,
-// nor did we go over any "C" so im going to write this in C++.
 
 #include <iostream>
 #include <array>
